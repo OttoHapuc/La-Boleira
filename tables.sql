@@ -94,7 +94,7 @@ CREATE TABLE public.orders (
     "clientId" integer NOT NULL,
     "cakeId" integer NOT NULL,
     quantity integer NOT NULL,
-    "createdAt" timestamp without time zone NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
     "totalPrice" numeric NOT NULL
 );
 
@@ -144,39 +144,56 @@ ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.order
 -- Data for Name: cakes; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO public.cakes VALUES (1, 'Bolo de pote', 13, 'http://encurtador.com.br/iDIX0', 'Bolo de chocolate com recheio de leite ninho');
+INSERT INTO public.cakes VALUES (2, ',aconha', 13, 'http://encurtador.com.br/iDIX0', 'asaa');
+INSERT INTO public.cakes VALUES (3, 'knsdf', 20, 'http://encurtador.com.br/iDIX0', 'fgb');
 
 
 --
 -- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO public.clients VALUES (1, 'kj', 'jkn', '0000000000');
+INSERT INTO public.clients VALUES (2, 'hapuc', 'jkn', '0000000000');
+INSERT INTO public.clients VALUES (3, 'ottoniel', 'jkn', '0000000000');
 
 
 --
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO public.orders VALUES (2, 1, 2, 4, '2023-03-23 12:44:50.844728', 26);
+INSERT INTO public.orders VALUES (3, 1, 2, 4, '2023-03-23 12:53:24.174935', 26);
+INSERT INTO public.orders VALUES (4, 1, 1, 4, '2023-03-23 12:53:29.956802', 26);
+INSERT INTO public.orders VALUES (5, 3, 1, 4, '2023-03-23 12:53:34.663797', 26);
+INSERT INTO public.orders VALUES (6, 3, 1, 4, '2023-03-23 12:53:35.543087', 26);
+INSERT INTO public.orders VALUES (7, 3, 1, 4, '2023-03-23 12:53:36.313524', 26);
+INSERT INTO public.orders VALUES (8, 3, 2, 4, '2023-03-23 12:53:46.020201', 26);
+INSERT INTO public.orders VALUES (9, 3, 2, 4, '2023-03-23 12:53:46.294685', 26);
+INSERT INTO public.orders VALUES (10, 2, 2, 4, '2023-03-23 16:51:42.15307', 26);
+INSERT INTO public.orders VALUES (11, 2, 2, 4, '2023-03-23 16:51:56.0352', 26.8);
+INSERT INTO public.orders VALUES (12, 2, 1, 4, '2023-03-23 16:52:08.369485', 26.8);
 
 
 --
 -- Name: cakes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.cakes_id_seq', 1, false);
+SELECT pg_catalog.setval('public.cakes_id_seq', 3, true);
 
 
 --
 -- Name: clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.clients_id_seq', 1, false);
+SELECT pg_catalog.setval('public.clients_id_seq', 3, true);
 
 
 --
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.orders_id_seq', 1, false);
+SELECT pg_catalog.setval('public.orders_id_seq', 12, true);
 
 
 --
