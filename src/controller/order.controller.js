@@ -15,50 +15,54 @@ export async function postOrder(req,res){
         WHERE  "cakes"."id" = $1
         `,[cakeId]);
         if (cakedExist.rowCount === 0) return res.sendStatus(404);
-        if (Number(quantity) > 0 && Number(quantity) < 5) return res.sendStatus(400);
+        if (!Number(quantity)    > 0 && Number(quantity) < 5) return res.sendStatus(400);
+        await db.query(`
+        INSERT INTO "orders"("clientId", "cakeId", "quantity", "totalPrice")
+        VALUES ($1, $2, $3, $4)
+        `,[clientId, cakeId,quantity,totalPrice]);
     } catch (error) {
         res.status(500).send(error.message);
     }
-    res.status(201).send('OK');
+    return res.status(201).send('OK');
 }
 export async function getOrders(req,res){
     
     try {
         const orders = await db.query(`
         SELECT
-            'clients'.'id',
-            'clients'.'name',
-            'clients'.'address',
-            'clients'.'phone',
-            'cakes'.'id',
-            'cakes'.'name',
-            'cakes'.'price',
-            'cakes'.'description',
-            'cakes'.'image',
-            'orders'.'id'          AS 'orderId',
-            'orders'.'createdAt'   AS 'createdAt',
-            'orders'.'quantity'    AS 'quantity',
-            'orders'.'totalPrice'  AS 'totalPrice',
-        FROM orders
-        INNER JOIN clients 
-        ON 'orders'.'clientId' = 'clients'.'id'
-        INNER JOIN 'cakes'
-        ON 'orders'.'cakeId' = 'cakes'.'id'
+            "clients"."id"                              AS "clientId",
+            "clients"."name"                            AS "clientName",
+            "clients"."addres",
+            "clients"."phone",
+            "cakes"."id"                                AS "cakeId",
+            "cakes"."name"                              AS "cakeName",
+            "cakes"."price",
+            "cakes"."description",
+            "cakes"."image",
+            "orders"."id"                               AS "orderId",
+            to_char("orders"."createdAt", 'YYYY-MM-DD') AS "createdAt",
+            "orders"."quantity"                         AS "quantity",
+            "orders"."totalPrice"                       AS "totalPrice"
+        FROM "orders"
+        INNER JOIN "clients" 
+        ON "orders"."clientId" = "clients"."id"
+        INNER JOIN "cakes"
+        ON "orders"."cakeId" = "cakes"."id"
         `);
         if (orders.rowCount === 0) return res.sendStatus(404);
-        const formattedResult = orders.map(item => {
+        const formattedResult = orders.rows.map(item => {
             const client ={
-                id: item.clients.id,
-                name: item.clients.name,
-                address: item.clients.address,
-                phone: item.clients.phone
+                id: item.clientId,
+                name: item.clientName,
+                address: item.addres,
+                phone: item.phone
             };
             const cake = {
-                id: item.cakes.id,
-                name: item.cakes.name,
-                price: item.cakes.price,
-                image: item.cakes.image,
-                description: item.cakes.description
+                id: item.cakeId,
+                name: item.cakeName,
+                price: item.price,
+                image: item.image,
+                description: item.description
             };
             return {
                 client: client,
@@ -86,39 +90,39 @@ export async function getOrdersById(req,res){
         if (clientIdExist.rowCount === 0) return res.sendStatus(404);
         const clientOrders = await db.query(`
         SELECT
-            'clients'.'id',
-            'clients'.'name',
-            'clients'.'address',
-            'clients'.'phone',
-            'cakes'.'id',
-            'cakes'.'name',
-            'cakes'.'price',
-            'cakes'.'description',
-            'cakes'.'image',
-            'orders'.'id'          AS 'orderId',
-            'orders'.'createdAt'   AS 'createdAt',
-            'orders'.'quantity'    AS 'quantity',
-            'orders'.'totalPrice'  AS 'totalPrice',
-        FROM orders
-        WHERE 'orders'.'clientId' = $1
-        INNER JOIN clients 
-        ON 'orders'.'clientId' = 'clients'.'id'
-        INNER JOIN 'cakes'
-        ON 'orders'.'cakeId' = 'cakes'.'id'
+            "clients"."id"                              AS "clientId",
+            "clients"."name"                            AS "clientName",
+            "clients"."addres",
+            "clients"."phone",
+            "cakes"."id"                                AS "cakeId",
+            "cakes"."name"                              AS "cakeName",
+            "cakes"."price",
+            "cakes"."description",
+            "cakes"."image",
+            "orders"."id"                               AS "orderId",
+            to_char("orders"."createdAt", 'YYYY-MM-DD') AS "createdAt",
+            "orders"."quantity"                         AS "quantity",
+            "orders"."totalPrice"                       AS "totalPrice"
+        FROM "orders"
+        INNER JOIN "clients" 
+        ON "orders"."clientId" = "clients"."id"
+        INNER JOIN "cakes"
+        ON "orders"."cakeId" = "cakes"."id"
+        WHERE "orders"."clientId" = $1
         `, [id]);
-        const formattedResult = orders.map(item => {
+        const formattedResult = clientOrders.rows.map(item => {
             const client ={
-                id: item.clients.id,
-                name: item.clients.name,
-                address: item.clients.address,
-                phone: item.clients.phone
+                id: item.clientId,
+                name: item.clientName,
+                address: item.addres,
+                phone: item.phone
             };
             const cake = {
-                id: item.cakes.id,
-                name: item.cakes.name,
-                price: item.cakes.price,
-                image: item.cakes.image,
-                description: item.cakes.description
+                id: item.cakeId,
+                name: item.cakeName,
+                price: item.price,
+                image: item.image,
+                description: item.description
             };
             return {
                 client: client,
