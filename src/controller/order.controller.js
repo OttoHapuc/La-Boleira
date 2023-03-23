@@ -26,7 +26,6 @@ export async function postOrder(req,res){
     return res.status(201).send('OK');
 }
 export async function getOrders(req,res){
-    
     try {
         const orders = await db.query(`
         SELECT
@@ -40,7 +39,7 @@ export async function getOrders(req,res){
             "cakes"."description",
             "cakes"."image",
             "orders"."id"                               AS "orderId",
-            to_char("orders"."createdAt", 'YYYY-MM-DD') AS "createdAt",
+            "orders"."createdAt"                        AS "createdAt",
             "orders"."quantity"                         AS "quantity",
             "orders"."totalPrice"                       AS "totalPrice"
         FROM "orders"
@@ -48,6 +47,7 @@ export async function getOrders(req,res){
         ON "orders"."clientId" = "clients"."id"
         INNER JOIN "cakes"
         ON "orders"."cakeId" = "cakes"."id"
+        ORDER BY "createdAt" DESC;
         `);
         if (orders.rowCount === 0) return res.sendStatus(404);
         const formattedResult = orders.rows.map(item => {
@@ -73,7 +73,12 @@ export async function getOrders(req,res){
                 createdAt: item.createdAt
             };
         });
-        if(req.query.date) {};
+        if(req?.query.data) {
+            const orderByDate = formattedResult.filter( item => {
+                item.createdAt.toISOString().startsWith(req.query.data)
+            });
+            return res.send(orderByDate)
+        };
         return res.send(formattedResult);
     } catch (error) {
         res.status(500).send(error.message);
@@ -100,7 +105,7 @@ export async function getOrdersById(req,res){
             "cakes"."description",
             "cakes"."image",
             "orders"."id"                               AS "orderId",
-            to_char("orders"."createdAt", 'YYYY-MM-DD') AS "createdAt",
+            "orders"."createdAt"                        AS "createdAt",
             "orders"."quantity"                         AS "quantity",
             "orders"."totalPrice"                       AS "totalPrice"
         FROM "orders"
@@ -109,6 +114,7 @@ export async function getOrdersById(req,res){
         INNER JOIN "cakes"
         ON "orders"."cakeId" = "cakes"."id"
         WHERE "orders"."clientId" = $1
+        ORDER BY "createdAt" DESC;
         `, [id]);
         const formattedResult = clientOrders.rows.map(item => {
             const client ={

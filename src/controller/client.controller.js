@@ -40,7 +40,7 @@ export async function getClient(req,res){
             "cakes"."description",
             "cakes"."image",
             "orders"."id"                               AS "orderId",
-            to_char("orders"."createdAt", 'DD-MM-YYYY') AS "createdAt",
+            "orders"."createdAt"                        AS "createdAt",
             "orders"."quantity"                         AS "quantity",
             "orders"."totalPrice"                       AS "totalPrice"
         FROM "orders"
@@ -49,6 +49,7 @@ export async function getClient(req,res){
         INNER JOIN "cakes"
         ON "orders"."cakeId" = "cakes"."id"
         WHERE "orders"."clientId" = $1
+        ORDER BY "createdAt" ASC;
         `, [id]);
         const formattedResult = clientOrders.rows.map(item => {
             const client ={
