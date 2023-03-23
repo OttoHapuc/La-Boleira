@@ -7,9 +7,9 @@ export async function postCake(req,res){
     if (! typeof description === "string") res.sendStatus(400);
     try {
         const nameExist = await db.query(`
-        SELECT "clients"."name" 
-        FROM "clients"
-        WHERE  "clients"."name" = $1
+        SELECT "cakes"."name" 
+        FROM "cakes"
+        WHERE  "cakes"."name" = $1
         `,[name]);
         if (nameExist.rowCount > 0) return res.sendStatus(409);
         await db.query(`
