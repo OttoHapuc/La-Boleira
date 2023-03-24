@@ -15,7 +15,8 @@ export async function postOrder(req,res){
         WHERE  "cakes"."id" = $1
         `,[cakeId]);
         if (cakedExist.rowCount === 0) return res.sendStatus(404);
-        if (!Number(quantity)    > 0 && Number(quantity) < 5) return res.sendStatus(400);
+        console.log(quantity)
+        if (Number(quantity)    <= 0 || Number(quantity) > 5) return res.status(400).send("quantity >0 || <5 please!!!");
         await db.query(`
         INSERT INTO "orders"("clientId", "cakeId", "quantity", "totalPrice")
         VALUES ($1, $2, $3, $4)
